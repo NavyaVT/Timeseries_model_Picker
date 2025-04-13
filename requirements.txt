@@ -1,0 +1,15 @@
+pandas
+numpy
+statsmodels
+pmdarima
+prophet
+torch
+scipy
+plotly
+uvicorn
+fastapi
+requests
+seaborn
+joblib
+warning
+logging
