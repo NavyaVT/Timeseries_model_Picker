@@ -15,7 +15,7 @@ import time
 import json
 
 from core.dataset_segregator import freq_detecter
-from make_predictions import gru_model, fourier_model, prophet_model, ets_model # ,arima_model
+from Datagenie_DS.core.make_predictions import gru_model, fourier_model, prophet_model, ets_model # ,arima_model
 
 classifier, label_enc = joblib.load('models\\random_forest_model.pkl')
 def timestamp_indexing(dt):
