@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.model_selection import StratifiedShuffleSplit, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score
 from sklearn.base import clone
 import joblib
 import os

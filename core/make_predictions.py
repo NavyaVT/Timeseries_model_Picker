@@ -33,6 +33,17 @@ def prepare_data(data: pd.DataFrame) -> pd.DataFrame:
     data = data.set_index('point_timestamp')
     return data.sort_index()
 
+def arima_model(train: pd.DataFrame, test: pd.DataFrame, features: dict):
+    '''Auto Regression and Integrated Moving Average Model'''
+    train, test = train['point_value'], test['point_value']
+    try:
+        model = auto_arima(train, seasonal=False, m=features['period'])
+        predictions = model.predict(n_periods=len(test))
+        return [calculate_mape(test, predictions), predictions]
+    except Exception as e:
+        print(f"ARIMA Error: {e}")
+        return float('inf')
+    
 def ets_model(train: pd.DataFrame, test: pd.DataFrame, features: dict):
     """Exponential Smoothing State Space Model"""
     try:

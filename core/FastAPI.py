@@ -15,7 +15,7 @@ import time
 import json
 
 from core.dataset_segregator import freq_detecter
-from Datagenie_DS.core.make_predictions import gru_model, fourier_model, prophet_model, ets_model # ,arima_model
+from Datagenie_DS.core.make_predictions import gru_model, fourier_model, prophet_model, ets_model ,arima_model
 
 classifier, label_enc = joblib.load('models\\random_forest_model.pkl')
 def timestamp_indexing(dt):
@@ -159,8 +159,8 @@ async def predict_timeseries(
             mape, prediction = prophet_model(train_data, test_data)
         elif(best_model_name == 'fourier'): 
             mape, prediction = fourier_model(train_data, test_data, features)
-        # else:
-        #     mape, prediction = arima_model(train_data, test_data, features)
+        else:
+            mape, prediction = arima_model(train_data, test_data, features)
         time = time.time() - start_time
         anomalies = detect_anomalies(test['point_value'], prediction)
         forecastability_score = calculate_forecastability_score(train_data['point_value'],features)
