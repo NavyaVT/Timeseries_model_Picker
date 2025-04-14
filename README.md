@@ -26,7 +26,8 @@ Each of these models excels in capturing specific features like trends, seasonal
         * Focus on predictive performance.
     * **GridSearchCV** is employed for hyperparameter tuning to optimize the Random Forest model.
     * **StratifiedShuffleSplit** is utilized for robust cross-validation, ensuring balanced representation of classes during training and validation.
-
+## Link to the explanation video
+* https://drive.google.com/drive/folders/1SUIqFLgSSu4Gn4i9nkYbl2bajiOkWKJA 
 ## Usage Instructions
 
 1.  **Clone the Repository:**
