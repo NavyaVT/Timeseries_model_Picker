@@ -34,14 +34,18 @@ Each of these models excels in capturing specific features like trends, seasonal
     git clone [https://github.com/NavyaVT/Datagenie_DS](https://github.com/NavyaVT/Datagenie_DS)
     ```
 
-2.  **Run the FastAPI Backend:**
+2.  **Install the requirements file:**
+    ```bash
+     pip install -r requirements.txt
+    ```
+3.  **Run the FastAPI Backend:**
     * Navigate to the `core` folder.
     * Start the FastAPI server:
         ```bash
         uvicorn FastAPI:app --reload
         ```
 
-3.  **Run the Streamlit Application:**
+4.  **Run the Streamlit Application:**
     * Run the Streamlit app:
         ```bash
         streamlit run streamlit_forecast.py
