@@ -2,7 +2,6 @@ import streamlit as st
 import requests
 import pandas as pd
 import json
-import io
 from datetime import datetime
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -49,7 +48,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# API Configuration
 API_URL = "http://localhost:8000/predict"
 
 def validate_test_data(test_data):
@@ -68,7 +66,7 @@ def validate_test_data(test_data):
     return True, ""
 
 def display_results(response):
-    """Display the API response in a formatted way"""
+    """Display the prediction results in a formatted way"""
     st.subheader("📊 Forecast Results", divider="rainbow")
     
     # Metrics columns
@@ -108,32 +106,28 @@ def display_results(response):
         x='timestamp', y='point_value',
         color='red', label='Anomaly', s=100, ax=ax
     )
+    y_min = min(results_df['point_value'].min(), results_df['predicted'].min())
+    y_max = max(results_df['point_value'].max(), results_df['predicted'].max())
+    margin = (y_max - y_min) * 0.05  # 5% margin
+    ax.set_ylim(y_min - margin, y_max + margin)
     ax.set_title('Actual vs Predicted Values')
     ax.set_xlabel('Timestamp')
     ax.set_ylabel('Value')
     st.pyplot(fig)
 
 def send_request(uploaded_file, test_data, date_from, date_to):
-    """Send request to FastAPI endpoint with error handling"""
     try:
         files = {'file': (uploaded_file.name, uploaded_file.getvalue())}
-        
-        # Prepare the complete payload as form data
-        data = {
+        payload = {
+            'test_data': test_data,
             'date_from': date_from,
             'date_to': date_to,
         }
-        
-        # Convert test_data to JSON string for the form data
-        data['test_data'] = json.dumps(test_data)
-        
+        headers = {} #content type is handeled by requests library.
+
         with st.spinner('🚀 Processing your forecast...'):
-            response = requests.post(
-                API_URL,
-                data=data,      # Send as form data
-                files=files     # Send file as multipart
-            )
-        
+            response = requests.post(API_URL, files=files, data={'request_data':json.dumps(payload)})
+
         if response.status_code == 200:
             st.session_state.last_response = response.json()
             st.markdown(f"<div class='success-message'>✅ Forecast completed successfully!</div>", unsafe_allow_html=True)
@@ -142,14 +136,14 @@ def send_request(uploaded_file, test_data, date_from, date_to):
             error_msg = response.json().get('detail', 'Unknown error occurred')
             st.markdown(f"<div class='error-message'>❌ API Error: {error_msg}</div>", unsafe_allow_html=True)
             return None
-            
+
     except requests.exceptions.RequestException as e:
         st.markdown(f"<div class='error-message'>❌ Connection Error: {str(e)}</div>", unsafe_allow_html=True)
         return None
     except Exception as e:
         st.markdown(f"<div class='error-message'>❌ Unexpected Error: {str(e)}</div>", unsafe_allow_html=True)
         return None
-    
+
 def main():
     st.title("⏳ Time Series Forecasting Dashboard")
     st.markdown("Upload your training data and test points to generate forecasts")
@@ -160,7 +154,7 @@ def main():
         uploaded_file = st.file_uploader(
             "Choose a CSV, Excel, or TXT file",
             type=['csv', 'xlsx', 'xls', 'txt'],
-            help="File must contain 'timestamp' and 'point_value' columns"
+            help="File must contain 'point_timestamp' and 'point_value' columns"
         )
         
         # Date range selection
